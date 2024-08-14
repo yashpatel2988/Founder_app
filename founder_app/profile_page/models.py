@@ -1,24 +1,21 @@
 from django.db import models
 
-class UserProfile(models.Model):
-    ROLE_CHOICES = [
-        (10, 'Founder'),
-        (20, 'Investor'),
-    ]
-    
-    id = models.AutoField(primary_key=True)
-    role = models.IntegerField(choices=ROLE_CHOICES)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    gender = models.CharField(max_length=10)
+class FounderProfile(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    gender = models.CharField(max_length=30)
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=15)
-    login_id = models.EmailField(unique=True)
-    language = models.CharField(max_length=20)
-    last_updated_date = models.DateTimeField(auto_now=True)
-    last_updated_by = models.IntegerField(max_length=100, blank=True, null=True)
-    created_date = models.DateTimeField(auto_now_add=True)
-    
+    login_id = models.CharField(max_length=50)
+    language = models.JSONField(max_length=50)
+    last_updated_date = models.DateField(blank=True, null=True,auto_now=True)
+    last_updated_by = models.BigIntegerField(blank=True, null=True)
+    created_date = models.DateField(blank=True, null=True,auto_now_add=True)
+    created_by = models.BigIntegerField(blank=True, null=True)
+    is_active = models.BooleanField(db_column='isActive',default=True)  # Field name made lowercase.
+
     class Meta:
-        db_table = 'user_profile'  # Replace with the actual table name
         managed = False
+        db_table = 'founder_profile'
+        unique_together = (('phone_number', 'login_id'),)

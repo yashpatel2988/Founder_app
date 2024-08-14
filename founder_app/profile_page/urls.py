@@ -1,10 +1,10 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import UserProfileViewSet
+from django.urls import path
+from .views import UserProfileViewSet, UserDetailView, UserRegistrationView
 
-router = DefaultRouter()
-router.register(r'userprofiles', UserProfileViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('user_detail/', UserDetailView.as_view(), name='user-detail'),
+    path('register/', UserRegistrationView.as_view(), name='user-register'),
+    path('update_profile/', UserProfileViewSet.as_view({'put': 'update_profile'}), name='profile-update'),
+    path('soft_delete/', UserProfileViewSet.as_view({'delete': 'soft_delete'}), name='profile-soft-delete'),
 ]

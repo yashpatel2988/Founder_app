@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-a_e-nfkxcruh_k3%o-0qr$arho!82c8e+dwc5nxn@7i6rcl)wh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,8 +40,49 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'profile_page',
+    'videos',
+    'login',
+    'programm_detail',
+    'founder_team',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+
+import datetime
+JWT_SECRET_KEY = JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'default-secret-key')
+#os.getenv('JWT_SECRET_KEY')
+JWT_EXPIRATION_DELTA = datetime.timedelta(minutes=15)  # JWT token expiration
+JWT_REFRESH_EXPIRATION_DELTA = datetime.timedelta(days=7)  # Refresh token expiration
+
+# Google Sign-In
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+#SIMPLE_JWT = {
+#    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+#    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
+#    'ROTATE_REFRESH_TOKENS': True,
+#    'BLACKLIST_AFTER_ROTATION': True,
+#    'UPDATE_LAST_LOGIN': True,
+#    'ALGORITHM': 'HS256',
+#    'SIGNING_KEY': 'e792baac4dbd14a81dcde8ccec5a58fdc3e0708f1ae061f512ca783a3800e7d5',
+#    'AUTH_HEADER_TYPES': ('Bearer',),
+#}
+
+# settings.py
+
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 MIDDLEWARE = [
@@ -50,6 +93,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'login.middleware.JWTMiddleware',
 ]
 
 ROOT_URLCONF = 'founder_app.urls'
@@ -93,7 +137,10 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
     ],
+    
 }
 
 
